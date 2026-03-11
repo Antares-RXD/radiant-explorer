@@ -7,7 +7,7 @@
     },
     "site": {
         "title": "Radiant Explorer",
-        "description": "Explorer for Neurai Blockchain",
+        "description": "Explorer for Radiant Blockchain",
         "coinSymbol": "RXD",
         "coinName": "Radiant",
         "logoPath": "/radiant-logo.png",

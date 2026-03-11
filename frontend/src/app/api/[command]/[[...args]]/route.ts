@@ -191,7 +191,7 @@ export async function GET(
             case 'getcurrentprice': {
                 const gecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=radiant&vs_currencies=usd,btc');
                 const data = await gecko.json();
-                return NextResponse.json({ last_price_btc: data.neurai?.btc || 0, last_price_usd: data.neurai?.usd || 0 });
+                return NextResponse.json({ last_price_btc: data.radiant?.btc || 0, last_price_usd: data.radiant?.usd || 0 });
             }
             case 'getbasicstats':
             case 'getsummary': {
@@ -209,8 +209,8 @@ export async function GET(
                     networkGraph: Number(stats?.hashrate || 0),
                     supply: supply,
                     connections: stats?.connections || 0,
-                    price_btc: priceRes.neurai?.btc || 0,
-                    price_usd: priceRes.neurai?.usd || 0
+                    price_btc: priceRes.radiant?.btc || 0,
+                    price_usd: priceRes.radiant?.usd || 0
                 });
             }
             default:

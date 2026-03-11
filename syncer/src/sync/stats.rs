@@ -151,7 +151,7 @@ impl PriceSync {
     async fn fetch_price_usd(&self) -> Result<f64> {
         #[derive(serde::Deserialize)]
         struct CoinGeckoResponse {
-            neurai: Option<CoinGeckoPrice>,
+            radiant: Option<CoinGeckoPrice>,
         }
 
         #[derive(serde::Deserialize)]
@@ -162,7 +162,7 @@ impl PriceSync {
         let response = self
             .client
             .get(&self.config.api.coingecko_url)
-            .header("User-Agent", "neurai-syncer/3.0")
+            .header("User-Agent", "radiant-syncer/3.0")
             .header("Accept", "application/json")
             .send()
             .await?;
@@ -175,7 +175,7 @@ impl PriceSync {
         }
 
         let data: CoinGeckoResponse = response.json().await?;
-        let price = data.neurai.and_then(|n| n.usd).unwrap_or(0.0);
+        let price = data.radiant.and_then(|n| n.usd).unwrap_or(0.0);
 
         if price <= 0.0 {
             return Err(crate::error::SyncerError::Config(

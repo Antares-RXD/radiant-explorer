@@ -66,7 +66,7 @@ export default function RootLayout({
                 <div className="container max-w-7xl mx-auto flex h-16 items-center flex justify-between px-4">
                   <Link href="/" className="mr-8 flex items-center space-x-2 group">
                     <img
-                      src={config.site.logoPath || "/neurai-logo.png"}
+                      src={config.site.logoPath || "/radiant-logo.png"}
                       alt={config.site.logoAlt || `${config.site.coinName} Logo`}
                       className="w-8 h-8 rounded-full"
                     />
