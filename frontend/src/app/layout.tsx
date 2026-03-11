@@ -13,7 +13,7 @@ import Link from "next/link";
 import config from "../config.json";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://explorer.neurai.org'),
+  metadataBase: new URL('https://radiantexplorer.com'),
   title: {
     default: config.site.title,
     template: `%s | ${config.site.title}`,
@@ -22,14 +22,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: config.site.title,
     description: config.site.description,
-    url: 'https://explorer.neurai.org',
+    url: 'https://radiantexplorer.com',
     siteName: config.site.title,
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Radiant Explorer Preview',
+        alt: 'Radiant Explorer',
       },
     ],
     locale: 'en_US',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     creator: '@neuraiproject',
   },
   icons: {
-    icon: config.site.logoPath || '/neurai-logo.png',
+    icon: config.site.logoPath || '/radiant-logo.png',
   },
 };
 
