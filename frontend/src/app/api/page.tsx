@@ -63,14 +63,14 @@ export default function ApiDocs() {
                     <ApiMethod
                         title="getblock [hash]"
                         description="Returns information about the block with the given hash."
-                        links={[{ href: "/api/getblock?hash=0000000000000000000000000000000000000000000000000000000000000000", label: "/api/getblock?hash=0000000000000000000000000000000000000000000000000000000000000000" }]}
+                        links={[{ href: "/api/getblock?hash=0000000065d8ed5d8be28d6876b3ffb660ac2a6c0ca59e437e1f7a6f4e003fb4", label: "/api/getblock?hash=0000000065d8ed5d8be28d6876b3ffb660ac2a6c0ca59e437e1f7a6f4e003fb4" }]}
                     />
                     <ApiMethod
                         title="getrawtransaction [txid] [decrypt]"
                         description="Returns raw transaction representation for given transaction id. decrypt can be set to 0(false) or 1(true)."
                         links={[
-                            { href: "/api/getrawtransaction?txid=7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5&decrypt=0", label: "/api/getrawtransaction?txid=...&decrypt=0" },
-                            { href: "/api/getrawtransaction?txid=7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5&decrypt=1", label: "/api/getrawtransaction?txid=7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5&decrypt=1" }
+                            { href: "/api/getrawtransaction?txid=027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37&decrypt=0", label: "/api/getrawtransaction?txid=...&decrypt=0" },
+                            { href: "/api/getrawtransaction?txid=027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37&decrypt=1", label: "/api/getrawtransaction?txid=027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37&decrypt=1" }
                         ]}
                     />
                     <ApiMethod
@@ -99,22 +99,22 @@ export default function ApiDocs() {
                     <ApiMethod
                         title="getaddress (/api/getaddress?address=hash)"
                         description="Returns information for given address"
-                        links={[{ href: "/api/getaddress?address=NTCMHK3knrM33q4KZvMndEGN34knkomv6t", label: "/api/getaddress?address=NTCMHK3knrM33q4KZvMndEGN34knkomv6t" }]}
+                        links={[{ href: "/api/getaddress?address=16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X", label: "/api/getaddress?address=16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X" }]}
                     />
                     <ApiMethod
                         title="getaddresstxs (/api/getaddresstxs/hash/start/length)"
                         description="Returns last [length] transactions for address [hash], starting from offset [start]"
-                        links={[{ href: "/api/getaddresstxs/NTCMHK3knrM33q4KZvMndEGN34knkomv6t/0/50", label: "/api/getaddresstxs/NTCMHK3knrM33q4KZvMndEGN34knkomv6t/0/50" }]}
+                        links={[{ href: "/api/getaddresstxs/16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X/0/50", label: "/api/getaddresstxs/16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X/0/50" }]}
                     />
                     <ApiMethod
                         title="gettx (/api/gettx/hash)"
                         description="Returns information for given tx hash"
-                        links={[{ href: "/api/gettx/7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5", label: "/api/gettx/7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5" }]}
+                        links={[{ href: "/api/gettx/027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37", label: "/api/gettx/027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37" }]}
                     />
                     <ApiMethod
                         title="getbalance (/api/getbalance/hash)"
                         description="Returns current balance of given address"
-                        links={[{ href: "/api/getbalance/NTCMHK3knrM33q4KZvMndEGN34knkomv6t", label: "/api/getbalance/NTCMHK3knrM33q4KZvMndEGN34knkomv6t" }]}
+                        links={[{ href: "/api/getbalance/16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X", label: "/api/getbalance/16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X" }]}
                     />
                     <ApiMethod
                         title="getlasttxs (/api/getlasttxs/min/start/length)"
@@ -147,7 +147,7 @@ export default function ApiDocs() {
                 <div className="flex flex-col gap-8">
                     <ApiMethod
                         title="transaction (/tx/txid)"
-                        links={[{ href: "/tx/7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5", label: "/tx/7672ac210129b2a55ebc4c1e2cc7efb66422cb4e5af147a510828af08ec241d5" }]}
+                        links={[{ href: "/tx/027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37", label: "/tx/027c3f6ae3858a75e2c287a915b3d82a50c48ee7021b715eedae9497f8ba2c37" }]}
                     />
                     <ApiMethod
                         title="block (/block/hash)"
@@ -155,7 +155,7 @@ export default function ApiDocs() {
                     />
                     <ApiMethod
                         title="address (/address/hash)"
-                        links={[{ href: "/address/NTCMHK3knrM33q4KZvMndEGN34knkomv6t", label: "/address/NTCMHK3knrM33q4KZvMndEGN34knkomv6t" }]}
+                        links={[{ href: "/address/16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X", label: "/address/16JR3uTBpTSnhWfLdX8D5EcMrTVhrBCr2X" }]}
                     />
                 </div>
             </section>

@@ -13,9 +13,9 @@ pub struct MiningInfo {
 pub struct PeerInfo {
     pub id: i64,
     pub addr: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub addrbind: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub addrlocal: Option<String>,
     pub services: String,
     pub relaytxes: bool,
@@ -25,25 +25,25 @@ pub struct PeerInfo {
     pub bytesrecv: i64,
     pub conntime: i64,
     pub timeoffset: i64,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub pingtime: Option<f64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub minping: Option<f64>,
     pub version: i64,
     pub subver: String,
     pub inbound: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub addnode: Option<bool>,
     pub startingheight: i64,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub banscore: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub synced_headers: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub synced_blocks: Option<i64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub inflight: Option<Vec<i64>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     pub whitelisted: Option<bool>,
 }
 
@@ -54,7 +54,10 @@ pub struct TxOutSetInfo {
     pub transactions: i64,
     pub txouts: i64,
     pub bogosize: i64,
-    pub hash_serialized_2: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hash_serialized_2: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hash_serialized: Option<String>,
     pub disk_size: i64,
     pub total_amount: f64,
 }

@@ -3,7 +3,7 @@ name = "neurai-syncer"
 version = "3.0.0"
 edition = "2021"
 rust-version = "1.92"
-description = "High-performance blockchain syncer for Neurai Explorer"
+description = "High-performance blockchain syncer for Radiant Explorer"
 authors = ["Neurai Team"]
 
 [dependencies]

@@ -78,7 +78,7 @@ export default async function AddressPage({ params, searchParams }: { params: Pr
                     <div className="p-6 grid gap-4">
                         <div className="flex justify-between items-center border-b border-border pb-2 last:border-0 last:pb-0">
                             <span className="text-muted-foreground text-sm font-medium">Balance</span>
-                            <span className="font-mono">{parseFloat(addr.balance).toFixed(8)} <span className="text-primary">XNA</span></span>
+                            <span className="font-mono">{parseFloat(addr.balance).toFixed(8)} <span className="text-primary">RXD</span></span>
                         </div>
                         <div className="flex justify-between items-center border-b border-border pb-2 last:border-0 last:pb-0">
                             <span className="text-muted-foreground text-sm font-medium">Total Received</span>
@@ -133,7 +133,7 @@ export default async function AddressPage({ params, searchParams }: { params: Pr
                             : isOutgoing
                                 ? "text-red-600 dark:text-red-400"
                                 : "text-muted-foreground";
-                        const amountLabel = `${isIncoming ? "+" : isOutgoing ? "-" : ""}${Math.abs(netAmount).toFixed(3)} XNA`;
+                        const amountLabel = `${isIncoming ? "+" : isOutgoing ? "-" : ""}${Math.abs(netAmount).toFixed(3)} RXD`;
                         const dateTime = new Date(tx.blocktime * 1000).toLocaleString(undefined, {
                             year: '2-digit',
                             month: 'numeric',

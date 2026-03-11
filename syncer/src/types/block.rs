@@ -22,7 +22,10 @@ pub struct Block {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nextblockhash: Option<String>,
     pub tx: Vec<Transaction>,
-    pub size: i32,
-    pub strippedsize: i32,
-    pub weight: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub strippedsize: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub weight: Option<i32>,
 }

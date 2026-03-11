@@ -6,36 +6,36 @@
         "retryDelay": 1000
     },
     "site": {
-        "title": "Neurai Explorer",
+        "title": "Radiant Explorer",
         "description": "Explorer for Neurai Blockchain",
-        "coinSymbol": "XNA",
-        "coinName": "Neurai",
-        "logoPath": "/neurai-logo.png",
-        "logoAlt": "Neurai Logo",
+        "coinSymbol": "RXD",
+        "coinName": "Radiant",
+        "logoPath": "/radiant-logo.png",
+        "logoAlt": "Radiant Logo",
         "socials": [
             {
                 "label": "Website",
-                "href": "https://neurai.org",
+                "href": "https://radiantblockchain.org",
                 "icon": "FaGlobe"
             },
             {
                 "label": "X",
-                "href": "https://twitter.com/neuraiproject",
+                "href": "https://x.com/RXD_Community",
                 "icon": "FaXTwitter"
             },
             {
                 "label": "Reddit",
-                "href": "https://www.reddit.com/r/neuraiproject",
+                "href": "https://www.reddit.com/r/Radiant_RXD",
                 "icon": "FaRedditAlien"
             },
             {
                 "label": "Telegram",
-                "href": "https://t.me/neuraiproject",
+                "href": "https://t.me/RadiantBlockchain",
                 "icon": "FaTelegram"
             },
             {
                 "label": "Discord",
-                "href": "https://discord.gg/neurai-project-1062678996208336896",
+                "href": "https://discord.gg/radiantblockchain",
                 "icon": "FaDiscord"
             }
         ]

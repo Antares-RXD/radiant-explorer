@@ -43,7 +43,7 @@ export async function GET() {
                 mempoolSize: 0,
                 decimals: 8,
                 dbSize: 0,
-                about: "Custom Neurai Explorer"
+                about: "Custom Radiant Explorer"
             },
             backend: {
                 chain: "main",

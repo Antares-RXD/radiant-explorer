@@ -72,7 +72,8 @@ pub struct Transaction {
     pub hash: String,
     pub version: i32,
     pub size: i32,
-    pub vsize: i32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vsize: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weight: Option<i32>,
     pub locktime: u64,

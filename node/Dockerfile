@@ -1,47 +1,58 @@
-FROM debian:11
+# Radiant Node (radiantd) - Built from Radiant-Core
+# https://github.com/Radiant-Core/Radiant-Core
+# Build with: docker build -f Dockerfile.node -t radiantd .
 
-LABEL maintainer="Asimov"
-LABEL version="1.0.5"
-LABEL description="Neurai 1.0.5| Docker for linux x64"
+FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends git curl wget build-essential \
-    libtool autotools-dev automake pkg-config bsdmainutils python3 \
-    libssl-dev libevent-dev libboost-system-dev libboost-filesystem-dev \
-    libboost-chrono-dev libboost-test-dev libboost-thread-dev \
-    libminiupnpc-dev libzmq3-dev ca-certificates bison && \
-    git clone --depth 1 --single-branch --branch 1.0.5 https://github.com/NeuraiProject/Neurai.git /build && \
-    cd /build/depends && \
-    make HOST=x86_64-pc-linux-gnu -j$(nproc) && \
-    cd /build && \
-    ./autogen.sh && \
-    contrib/install_db4.sh /tmp && \
-    export BDB_PREFIX=/tmp/db4 && \
-    CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure \
-    --prefix=/usr/local \
-    --enable-cxx --disable-shared --disable-tests --disable-gui --disable-gui-tests --with-pic \
-    LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" && \
-    make -j$(nproc) && \
-    make install && \
-    strip /usr/local/bin/neuraid /usr/local/bin/neurai-cli && \
-    cd / && \
-    rm -rf /build /tmp/db4 /var/lib/apt/lists/* /root/.cache /tmp/* && \
-    apt-get purge -y git curl wget build-essential libtool autotools-dev automake \
-    pkg-config bsdmainutils python3 libssl-dev libevent-dev libboost-system-dev \
-    libboost-filesystem-dev libboost-chrono-dev libboost-test-dev libboost-thread-dev \
-    libminiupnpc-dev libzmq3-dev bison && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libtool \
+    autotools-dev \
+    automake \
+    pkg-config \
+    libssl-dev \
+    libevent-dev \
+    bsdmainutils \
+    libboost-all-dev \
+    libzmq3-dev \
+    libminiupnpc-dev \
+    git \
+    cmake \
+    ninja-build \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY node.sh /node.sh
+WORKDIR /build
 
-RUN chmod +x /node.sh && mkdir -p /data
+# Clone Radiant-Core from the official repository
+RUN git clone --depth 1 --branch v2.1.2 https://github.com/Radiant-Core/Radiant-Core.git radiant
+WORKDIR /build/radiant
 
-VOLUME /data
+# Build radiantd
+RUN cmake -B build -G Ninja \
+    -DBUILD_RADIANT_QT=OFF \
+    -DBUILD_RADIANT_WALLET=OFF \
+    -DENABLE_MAN=OFF \
+    -DCMAKE_BUILD_TYPE=Release
 
-EXPOSE 19000 19001
+RUN cmake --build build --target radiantd radiant-cli -j$(nproc)
 
-ENTRYPOINT ["/node.sh"]
+# Install binaries
+RUN install -m 755 build/src/radiantd /usr/local/bin/ && \
+    install -m 755 build/src/radiant-cli /usr/local/bin/
+
+# Cleanup build files to reduce image size
+RUN rm -rf /build
+
+# Create data directory
+RUN mkdir -p /root/.radiant
+
+EXPOSE 7332 7333
+
+VOLUME ["/root/.radiant"]
+
+ENTRYPOINT ["radiantd"]
+CMD ["-server=1", "-printtoconsole"]

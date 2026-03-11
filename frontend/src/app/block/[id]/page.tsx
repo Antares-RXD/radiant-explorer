@@ -92,7 +92,7 @@ export default function BlockPage() {
                                 </div>
                                 <div className="flex items-center justify-end pr-2">
                                     <span className="font-mono font-bold">
-                                        <span className="text-green-600 dark:text-green-400">{tx.vout.reduce((acc: number, v: TransactionOutput) => acc + (parseFloat(v.value) || 0), 0).toFixed(8)}</span> XNA
+                                        <span className="text-green-600 dark:text-green-400">{tx.vout.reduce((acc: number, v: TransactionOutput) => acc + (parseFloat(v.value) || 0), 0).toFixed(8)}</span> RXD
                                     </span>
                                 </div>
                             </div>

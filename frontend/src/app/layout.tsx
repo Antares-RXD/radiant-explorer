@@ -29,7 +29,7 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Neurai Explorer Preview',
+        alt: 'Radiant Explorer Preview',
       },
     ],
     locale: 'en_US',
@@ -85,7 +85,7 @@ export default function RootLayout({
               <main className="flex-1 container max-w-7xl mx-auto py-8 px-4">{children}</main>
               <footer className="border-t border-border py-8 bg-muted/30">
                 <div className="container max-w-7xl mx-auto flex flex-col items-center gap-4 text-center text-sm text-muted-foreground">
-                  <p>© {new Date().getFullYear()} Neurai Project.</p>
+                  <p>© {new Date().getFullYear()} Radiant.</p>
                   <FooterSocials />
                 </div>
               </footer>

@@ -34,9 +34,9 @@ export function formatNumber(value: number, decimals = 2): string {
 }
 
 /**
- * Format satoshis to XNA with 8 decimal places
+ * Format satoshis to RXD with 8 decimal places
  */
-export function formatXNA(satoshis: number | bigint): string {
+export function formatRXD(satoshis: number | bigint): string {
   const value = typeof satoshis === 'bigint' ? Number(satoshis) : satoshis;
   return (value / 1e8).toFixed(8);
 }

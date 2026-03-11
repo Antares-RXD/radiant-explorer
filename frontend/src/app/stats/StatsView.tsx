@@ -70,21 +70,21 @@ export default function StatsView({ data }: StatsViewProps) {
                 </Card>
 
                 {/* 2. Volume */}
-                <Card title="Daily Volume (XNA)">
+                <Card title="Daily Volume (RXD)">
                     <div className="w-full pt-4 pr-4 pb-4" style={{ height: 300 }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 30, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
                                 <XAxis dataKey="date" fontSize={12} tickMargin={10} minTickGap={30} />
                                 <YAxis
-                                    tickFormatter={(value) => `${(value / 1_000_000).toFixed(1)}M`}
+                                    tickFormatter={(value: any) => `${(value / 1_000_000).toFixed(1)}M`}
                                 />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                                     itemStyle={{ color: 'var(--foreground)' }}
-                                    formatter={(value: number | undefined) => value ? `${(value / 1_000_000).toLocaleString('en-US', { maximumFractionDigits: 2 })} M` : '0'}
+                                    formatter={(value: any) => value ? `${(value / 1_000_000).toLocaleString('en-US', { maximumFractionDigits: 2 })} M` : '0'}
                                 />
-                                <Area type="monotone" dataKey="total_output" name="Volume (XNA)" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
+                                <Area type="monotone" dataKey="total_output" name="Volume (RXD)" stroke="#10b981" fill="#10b981" fillOpacity={0.2} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -97,11 +97,11 @@ export default function StatsView({ data }: StatsViewProps) {
                             <LineChart data={chartData} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
                                 <XAxis dataKey="date" fontSize={12} tickMargin={10} minTickGap={30} />
-                                <YAxis domain={['auto', 'auto']} tickFormatter={(value) => value > 1000 ? `${(value / 1000).toFixed(1)}k` : value.toFixed(0)} />
+                                <YAxis domain={['auto', 'auto']} tickFormatter={(value: any) => value > 1000 ? `${(value / 1000).toFixed(1)}k` : value.toFixed(0)} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                                     itemStyle={{ color: 'var(--foreground)' }}
-                                    formatter={(value: number | undefined) => value ? value.toFixed(2) : '0'}
+                                    formatter={(value: any) => value ? value.toFixed(2) : '0'}
                                 />
                                 <Line type="monotone" dataKey="avg_difficulty" name="Difficulty" stroke="#f59e0b" dot={false} strokeWidth={2} />
                             </LineChart>
@@ -120,7 +120,7 @@ export default function StatsView({ data }: StatsViewProps) {
                                 <Tooltip
                                     contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                                     itemStyle={{ color: 'var(--foreground)' }}
-                                    formatter={(value: number | undefined) => value ? `${value.toFixed(2)} TH/s` : '0'}
+                                    formatter={(value: any) => value ? `${value.toFixed(2)} TH/s` : '0'}
                                 />
                                 <Area type="monotone" dataKey="hashrate" name="Hashrate" stroke="#ec4899" fill="#ec4899" fillOpacity={0.2} />
                             </AreaChart>
@@ -157,7 +157,7 @@ export default function StatsView({ data }: StatsViewProps) {
                                 <Tooltip
                                     contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                                     itemStyle={{ color: 'var(--foreground)' }}
-                                    formatter={(value: number | undefined) => value ? Math.round(value).toLocaleString('en-US') : '0'}
+                                    formatter={(value: any) => value ? Math.round(value).toLocaleString('en-US') : '0'}
                                 />
                                 <Line type="monotone" dataKey="avg_block_size" name="Avg Size" stroke="#14b8a6" dot={false} strokeWidth={2} />
                             </LineChart>
@@ -166,17 +166,17 @@ export default function StatsView({ data }: StatsViewProps) {
                 </Card>
 
                 {/* 7. Avg Tx Value */}
-                <Card title="Avg Transaction Value (XNA)">
+                <Card title="Avg Transaction Value (RXD)">
                     <div className="w-full pt-4 pr-4 pb-4" style={{ height: 300 }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 20, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
                                 <XAxis dataKey="date" fontSize={12} tickMargin={10} minTickGap={30} />
-                                <YAxis tickFormatter={(value) => `${(value / 1_000_000).toFixed(2)}M`} />
+                                <YAxis tickFormatter={(value: any) => `${(value / 1_000_000).toFixed(2)}M`} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                                     itemStyle={{ color: 'var(--foreground)' }}
-                                    formatter={(value: number | undefined) => value ? value.toFixed(2) : '0'}
+                                    formatter={(value: any) => value ? value.toFixed(2) : '0'}
                                 />
                                 <Area type="monotone" dataKey="avg_tx_value" name="Avg Value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.2} />
                             </AreaChart>
@@ -192,13 +192,13 @@ export default function StatsView({ data }: StatsViewProps) {
                                 <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
                                 <XAxis dataKey="date" fontSize={12} tickMargin={10} minTickGap={30} />
                                 <YAxis
-                                    tickFormatter={(value) => `${(value / 1_000_000).toFixed(0)}M`}
+                                    tickFormatter={(value: any) => `${(value / 1_000_000).toFixed(0)}M`}
                                     domain={['auto', 'auto']}
                                 />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: 'var(--background)', borderColor: 'var(--border)' }}
                                     itemStyle={{ color: 'var(--foreground)' }}
-                                    formatter={(value: number | undefined) => value ? `${(value / 1_000_000).toLocaleString('en-US', { maximumFractionDigits: 2 })} M` : '0'}
+                                    formatter={(value: any) => value ? `${(value / 1_000_000).toLocaleString('en-US', { maximumFractionDigits: 2 })} M` : '0'}
                                 />
                                 <Area type="monotone" dataKey="supply" name="Supply" stroke="#eab308" fill="#eab308" fillOpacity={0.1} />
                             </AreaChart>

@@ -1,4 +1,4 @@
-# Neurai Explorer
+# Radiant Explorer
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)](https://react.dev/)
@@ -9,18 +9,17 @@
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square)](LICENSE)
 
-A blockchain explorer for the Neurai network, engineered for efficiency and scalability. It combines a Rust backend for high-throughput block synchronization with a Next.js frontend for the user interface.
+A blockchain explorer for the Radiant network, engineered for efficiency and scalability. It combines a Rust backend for high-throughput block synchronization with a Next.js frontend for the user interface.
 
 ### Technical Overview
 
 *   **Syncer Backend**: Implemented in **Rust** using **Tokio** for asynchronous event processing. Handles block indexing with reduced memory overhead.
 *   **Frontend Architecture**: Built on **Next.js 16** (App Router) and **React 19**, leveraging Server Components for optimized rendering.
 *   **Analytics**: Data visualization for network statistics, including difficulty and hashrate, utilizing **Recharts**.
-*   **Asset Management**: Native indexing and display of Neurai Assets (Tokens), including metadata and transfer ledgers.
 *   **User Interface**: Responsive layout constructed with **Tailwind CSS**, including system-aware theme support.
 *   **Data Persistence**: **PostgreSQL** database managed via **SQLx** for the syncer and **Prisma** for frontend queries.
 
-![neuria explorer home](neurai-explorer-home.png)
+![radiant explorer home](radiant-explorer-home.png)
 
 ---
 
@@ -40,7 +39,7 @@ A blockchain explorer for the Neurai network, engineered for efficiency and scal
 
 ## Architecture Overview
 
-![neuria explorer home](neurai_architecture.png)
+![radiant architecture](radiant_architecture.png)
 
 The explorer follows a microservices architecture with four main components communicating through Docker's internal network.
 
@@ -73,14 +72,14 @@ The explorer follows a microservices architecture with four main components comm
 | Component | Technology | Purpose |
 |-----------|------------|---------|
 | Containerization | Docker Compose | Service orchestration |
-| Blockchain Node | Neurai Core | Network connectivity |
-| Node Base | Debian 11 | Node container OS |
+| Blockchain Node | Radiant Core | Network connectivity |
+| Node Base | Ubuntu 22.04 | Node container OS |
 
 ---
 
 ## Services
 
-### Frontend (`neurai-frontend`)
+### Frontend (`radiant-frontend`)
 
 Web interface for blockchain data visualization and interaction.
 
@@ -95,7 +94,7 @@ Web interface for blockchain data visualization and interaction.
   - Data visualization using Recharts
   - Conditional class utility via clsx
 
-### Syncer (`neurai-syncer`)
+### Syncer (`radiant-syncer`)
 
 Rust-based service responsible for blockchain synchronization and indexing.
 
@@ -105,9 +104,9 @@ Rust-based service responsible for blockchain synchronization and indexing.
   - Memory usage: ~500MB (efficient resource management)
   - Zero-copy deserialization implemented where applicable
   - Database connection pooling
-- **Communication**: JSON-RPC interface to the Neurai Node
+- **Communication**: JSON-RPC interface to the Radiant Node
 
-### Database (`neurai-postgres`)
+### Database (`radiant-postgres`)
 
 PostgreSQL instance for indexed blockchain data persistence.
 
@@ -118,14 +117,14 @@ PostgreSQL instance for indexed blockchain data persistence.
   - Transaction records (txid, block reference, inputs/outputs)
   - Address ledgers and balance tracking
 
-### Node (`neurai-node`)
+### Node (`radiant-node`)
 
-Neurai blockchain daemon instance.
+Radiant blockchain daemon instance.
 
-- **Source**: [NeuraiProject/Neurai](https://github.com/NeuraiProject/Neurai) v1.0.5
+- **Source**: [Radiant-Core/Radiant-Core](https://github.com/Radiant-Core/Radiant-Core)
 - **Build**: Custom Docker container based on Ubuntu 22.04
 - **Ports**:
-  - `19001`: JSON-RPC interface exposure
+  - `7332`: JSON-RPC interface exposure
 
 ---
 
@@ -142,8 +141,8 @@ Neurai blockchain daemon instance.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/neurai-explorer.git
-cd neurai-explorer
+git clone https://github.com/your-org/radiant-explorer.git
+cd radiant-explorer
 
 # Build and start all services
 docker compose up --build -d
@@ -156,9 +155,9 @@ docker compose logs -f
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Explorer UI | http://localhost:3000 | Web interface |
+| Explorer UI | http://localhost:3333 | Web interface |
 | PostgreSQL | localhost:5432 | Database (internal) |
-| Node RPC | localhost:19001 | Blockchain RPC |
+| Node RPC | localhost:7332 | Blockchain RPC |
 
 ---
 
@@ -171,12 +170,12 @@ docker compose logs -f
 ```env
 # RPC Connection
 RPC_HOST=node
-RPC_PORT=19001
-RPC_USER=neuraiuser
-RPC_PASS=neuraipassword
+RPC_PORT=7332
+RPC_USER=radiantuser
+RPC_PASS=radiantpassword
 
 # Database
-DATABASE_URL=postgres://user:pass@postgres:5432/neurai
+DATABASE_URL=postgres://radiant:radiant123@postgres:5432/radiantdb
 
 # Logging
 RUST_LOG=info,sqlx=warn,reqwest=warn
@@ -186,23 +185,24 @@ RUST_LOG=info,sqlx=warn,reqwest=warn
 
 ```env
 # Database (Prisma)
-DATABASE_URL=postgres://user:pass@postgres:5432/neurai
+DATABASE_URL=postgres://radiant:radiant123@postgres:5432/radiantdb
 
 # API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
+NEXT_PUBLIC_API_URL=http://localhost:3333/api
 ```
 
 #### Node Configuration
 
-The Neurai node is configured via `neurai.conf`:
+The Radiant node is configured via `docker-compose.yml` arguments natively:
 
-```conf
-server=1
-rpcuser=neuraiuser
-rpcpassword=neuraipassword
-rpcallowip=0.0.0.0/0
-rpcbind=0.0.0.0
-txindex=1
+```yaml
+    command:
+      - "-server=1"
+      - "-printtoconsole"
+      - "-rpcuser=radiantuser"
+      - "-rpcpassword=radiantpassword"
+      - "-rpcbind=0.0.0.0"
+      - "-rpcallowip=0.0.0.0/0"
 ```
 
 ### Resource Limits
@@ -239,13 +239,13 @@ docker compose up --build -d <service-name>
 docker compose logs -f
 
 # Specific service
-docker compose logs -f neurai-syncer
+docker compose logs -f radiant-explorer-syncer
 ```
 
 ### Database Access
 
 ```bash
-docker compose exec neurai-postgres psql -U neuraiuser -d neurai
+docker compose exec radiant-explorer-postgres psql -U radiant -d radiantdb
 ```
 
 ---
@@ -253,7 +253,7 @@ docker compose exec neurai-postgres psql -U neuraiuser -d neurai
 ## Project Structure
 
 ```
-neurai-explorer/
+radiant-explorer/
 ├── frontend/                 # Next.js application
 │   ├── app/                  # App Router pages
 │   ├── components/           # React components
@@ -265,7 +265,7 @@ neurai-explorer/
 │   │   ├── rpc/              # RPC client
 │   │   └── db/               # Database operations
 │   └── Cargo.toml
-├── node/                     # Neurai node Dockerfile
+├── node/                     # Radiant node Dockerfile
 ├── docker-compose.yml        # Service orchestration
 └── README.md
 ```

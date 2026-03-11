@@ -135,7 +135,7 @@ function RecentTransactions() {
                   #{tx.height}
                 </Link>
                 <span className="font-bold text-green-600 dark:text-green-400 whitespace-nowrap">
-                  {tx.totalOutput ? tx.totalOutput.toFixed(2) : '0.00'} XNA
+                  {tx.totalOutput ? tx.totalOutput.toFixed(2) : '0.00'} RXD
                 </span>
               </div>
             </div>
@@ -146,7 +146,7 @@ function RecentTransactions() {
             </div>
             <div className="hidden lg:flex flex-col items-start lg:items-end justify-center w-full lg:w-auto min-w-0 lg:min-w-[160px]">
               <span className="font-bold text-green-600 dark:text-green-400 text-base lg:text-xl whitespace-nowrap">
-                {tx.totalOutput ? tx.totalOutput.toFixed(2) : '0.00'} XNA
+                {tx.totalOutput ? tx.totalOutput.toFixed(2) : '0.00'} RXD
               </span>
               <div className="text-sm lg:text-base text-muted-foreground flex items-center gap-1">
                 <Link href={`/block/${tx.height}`} className="text-primary hover:underline font-bold">#{tx.height}</Link>

@@ -25,7 +25,7 @@ export default function RichListPage() {
                             <tr className="border-b border-border bg-muted/30">
                                 <th className="text-left p-3 text-muted-foreground font-semibold text-sm lg:text-base">Rank</th>
                                 <th className="text-left p-3 text-muted-foreground font-semibold text-sm lg:text-base">Address</th>
-                                <th className="text-right p-3 text-muted-foreground font-semibold text-sm lg:text-base">Balance (XNA)</th>
+                                <th className="text-right p-3 text-muted-foreground font-semibold text-sm lg:text-base">Balance (RXD)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,7 +38,7 @@ export default function RichListPage() {
                                         </Link>
                                     </td>
                                     <td className="p-3 text-right font-mono font-semibold">
-                                        {parseFloat(item.balance).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 3 })} XNA
+                                        {parseFloat(item.balance).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 3 })} RXD
                                     </td>
                                 </tr>
                             ))}
@@ -56,7 +56,7 @@ export default function RichListPage() {
                                     {item.address}
                                 </Link>
                                 <span className="font-mono font-semibold">
-                                    {parseFloat(item.balance).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 3 })} XNA
+                                    {parseFloat(item.balance).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 3 })} RXD
                                 </span>
                             </div>
                         </div>

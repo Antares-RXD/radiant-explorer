@@ -9,7 +9,7 @@
         "inputChunkSize": 100
     },
     "api": {
-        "coingeckoUrl": "https://api.coingecko.com/api/v3/simple/price?ids=neurai&vs_currencies=usd",
+        "coingeckoUrl": "https://api.coingecko.com/api/v3/simple/price?ids=radiant&vs_currencies=usd",
         "priceFetchInterval": 600000
     }
 }

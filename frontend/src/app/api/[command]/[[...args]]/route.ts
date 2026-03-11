@@ -189,7 +189,7 @@ export async function GET(
                 return NextResponse.json(txs.map(r => r.rawData));
             }
             case 'getcurrentprice': {
-                const gecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=neurai&vs_currencies=usd,btc');
+                const gecko = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=radiant&vs_currencies=usd,btc');
                 const data = await gecko.json();
                 return NextResponse.json({ last_price_btc: data.neurai?.btc || 0, last_price_usd: data.neurai?.usd || 0 });
             }
@@ -198,7 +198,7 @@ export async function GET(
                 const [stats, supplyResult, priceRes] = await Promise.all([
                     prisma.networkStats.findUnique({ where: { id: 1 } }),
                     prisma.address.aggregate({ _sum: { balance: true } }),
-                    fetch('https://api.coingecko.com/api/v3/simple/price?ids=neurai&vs_currencies=usd,btc').then(r => r.json()).catch(() => ({}))
+                    fetch('https://api.coingecko.com/api/v3/simple/price?ids=radiant&vs_currencies=usd,btc').then(r => r.json()).catch(() => ({}))
                 ]);
 
                 const supply = Number(supplyResult._sum.balance || 0);

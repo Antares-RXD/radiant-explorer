@@ -127,7 +127,7 @@ impl<'a> BlockProcessor<'a> {
             enriched.vin[i].value = Some(val);
 
             if val > 0.0 {
-                // Standard XNA Debit
+                // Standard RXD Debit
                 AddressesRepository::upsert_debit_tx(db_tx, addr, val).await?;
 
                 // Asset Debit
@@ -160,7 +160,7 @@ impl<'a> BlockProcessor<'a> {
             let val = vout.value;
 
             if val >= 0.0 {
-                // Standard XNA Credit
+                // Standard RXD Credit
                 AddressesRepository::upsert_credit_tx(db_tx, addr, val).await?;
 
                 // Asset Processing

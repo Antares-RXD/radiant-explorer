@@ -28,7 +28,7 @@ export default function TxPage() {
             <div>
                 <h1 className="text-3xl font-bold mb-2">Transaction Details</h1>
                 <div className="text-muted-foreground font-mono bg-muted/30 p-2 rounded inline-block text-sm lg:text-base max-w-full">
-                <TxIdDisplay txid={tx.txid} className="text-sm lg:text-base" forceFull />
+                    <TxIdDisplay txid={tx.txid} className="text-sm lg:text-base" forceFull />
                 </div>
             </div>
 
@@ -44,7 +44,7 @@ export default function TxPage() {
                     </div>
                     <div className="flex flex-col gap-1">
                         <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Output</span>
-                        <span className="font-mono font-bold text-green-600 dark:text-green-400">{totalOutput.toFixed(8)} <span className="text-muted-foreground text-sm font-normal">XNA</span></span>
+                        <span className="font-mono font-bold text-green-600 dark:text-green-400">{totalOutput.toFixed(8)} <span className="text-muted-foreground text-sm font-normal">RXD</span></span>
                     </div>
                     {/* Fee calculation requires previous outputs, not available in raw tx */}
                     <div className="flex flex-col gap-1">
@@ -69,7 +69,7 @@ export default function TxPage() {
                                     )}
                                 </div>
                                 <div className="font-mono text-sm whitespace-nowrap">
-                                    {vin.value ? parseFloat(vin.value).toFixed(8) : ''} XNA
+                                    {vin.value ? parseFloat(vin.value).toFixed(8) : ''} RXD
                                 </div>
                             </li>
                         ))}
@@ -85,7 +85,7 @@ export default function TxPage() {
                                     </Link>
                                 </div>
                                 <div className="font-mono text-sm lg:text-base whitespace-nowrap font-bold text-green-600 dark:text-green-400">
-                                    {parseFloat(vout.value).toFixed(8)} XNA
+                                    {parseFloat(vout.value).toFixed(8)} RXD
                                 </div>
                             </li>
                         ))}

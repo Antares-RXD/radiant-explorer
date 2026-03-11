@@ -56,7 +56,7 @@ export default function TransactionsPage() {
                                                 <TxIdDisplay txid={tx.txid} className="text-sm" />
                                             </Link>
                                             <div className={`rounded-md px-2 py-1 text-center text-sm font-bold ${getAmountClass(totalOutput)}`}>
-                                                {totalOutput ? totalOutput.toFixed(2) : '0.00'} XNA
+                                                {totalOutput ? totalOutput.toFixed(2) : '0.00'} RXD
                                             </div>
                                             <div className="flex items-center justify-between text-sm text-muted-foreground">
                                                 <Link href={`/block/${tx.height}`} className="text-primary hover:underline font-bold">
@@ -91,7 +91,7 @@ export default function TransactionsPage() {
                                                 <TxIdDisplay txid={tx.txid} className="text-base" />
                                             </Link>
                                             <div className={`justify-self-end rounded-md px-2 py-1 text-right font-bold ${getAmountClass(totalOutput)}`}>
-                                                {totalOutput ? totalOutput.toFixed(2) : '0.00'} XNA
+                                                {totalOutput ? totalOutput.toFixed(2) : '0.00'} RXD
                                             </div>
                                             <div className="justify-self-end whitespace-nowrap text-sm text-muted-foreground">{formatDate(tx.blocktime)}</div>
                                         </div>
