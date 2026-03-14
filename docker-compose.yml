@@ -11,6 +11,7 @@ services:
     command:
       - "-server=1"
       - "-printtoconsole"
+      - "-txindex=1"
       - "-rpcuser=${RPC_USER:-radiantuser}"
       - "-rpcpassword=${RPC_PASS:-radiantpassword}"
       - "-rpcworkqueue=${RPC_WORKQUEUE:-1024}"

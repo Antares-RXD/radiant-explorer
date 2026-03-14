@@ -55,4 +55,4 @@ EXPOSE 7332 7333
 VOLUME ["/root/.radiant"]
 
 ENTRYPOINT ["radiantd"]
-CMD ["-server=1", "-printtoconsole"]
+CMD ["-server=1", "-printtoconsole", "-txindex=1"]
