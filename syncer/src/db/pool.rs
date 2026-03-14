@@ -15,12 +15,10 @@ pub async fn create_pool(config: &DatabaseConfig) -> Result<PgPool> {
 
     tracing::info!("Database connection pool created");
 
-    // Run database migrations
-    sqlx::migrate!("./migrations")
-        .run(&pool)
-        .await
-        .map_err(|e| crate::error::SyncerError::Database(e.into()))?;
+    sqlx::raw_sql(include_str!("../../schema.sql"))
+        .execute(&pool)
+        .await?;
 
-    tracing::info!("Database migrations applied successfully");
+    tracing::info!("Database schema initialized successfully");
     Ok(pool)
 }

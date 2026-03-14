@@ -1,6 +1,5 @@
--- Initial migration to create the schema equivalent to schema.prisma
+-- Schema bootstrap for fresh explorer deployments.
 
--- Blocks table
 CREATE TABLE IF NOT EXISTS blocks (
     height INTEGER PRIMARY KEY,
     hash TEXT UNIQUE NOT NULL,
@@ -11,7 +10,6 @@ CREATE TABLE IF NOT EXISTS blocks (
 );
 CREATE INDEX IF NOT EXISTS idx_blocks_time ON blocks (time DESC);
 
--- Transactions table
 CREATE TABLE IF NOT EXISTS transactions (
     txid TEXT PRIMARY KEY,
     block_height INTEGER REFERENCES blocks(height) ON DELETE CASCADE,
@@ -21,7 +19,6 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 CREATE INDEX IF NOT EXISTS idx_tx_height ON transactions (block_height);
 
--- Addresses table
 CREATE TABLE IF NOT EXISTS addresses (
     address TEXT PRIMARY KEY,
     balance DECIMAL NOT NULL DEFAULT 0,
@@ -31,7 +28,25 @@ CREATE TABLE IF NOT EXISTS addresses (
 );
 CREATE INDEX IF NOT EXISTS idx_addr_balance ON addresses (balance DESC);
 
--- TxAddress mapping table
+CREATE TABLE IF NOT EXISTS utxos (
+    txid TEXT NOT NULL,
+    vout INTEGER NOT NULL,
+    block_height INTEGER NOT NULL,
+    time INTEGER NOT NULL,
+    value DECIMAL NOT NULL,
+    script_type TEXT NOT NULL,
+    script_hex TEXT NOT NULL,
+    raw_addresses JSONB NOT NULL DEFAULT '[]'::jsonb,
+    primary_address TEXT,
+    spent_by_txid TEXT,
+    spent_height INTEGER,
+    is_coinbase BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (txid, vout)
+);
+CREATE INDEX IF NOT EXISTS idx_utxos_primary_unspent ON utxos (primary_address, spent_by_txid);
+CREATE INDEX IF NOT EXISTS idx_utxos_block_height ON utxos (block_height);
+CREATE INDEX IF NOT EXISTS idx_utxos_spent_height ON utxos (spent_height);
+
 CREATE TABLE IF NOT EXISTS tx_addresses (
     txid TEXT REFERENCES transactions(txid) ON DELETE CASCADE,
     address TEXT REFERENCES addresses(address) ON DELETE CASCADE,
@@ -42,13 +57,11 @@ CREATE TABLE IF NOT EXISTS tx_addresses (
 CREATE INDEX IF NOT EXISTS idx_txaddr_address ON tx_addresses (address);
 CREATE INDEX IF NOT EXISTS idx_txaddr_time ON tx_addresses (time DESC);
 
--- Sync State table
 CREATE TABLE IF NOT EXISTS sync_state (
     key TEXT PRIMARY KEY,
     value TEXT
 );
 
--- Network Stats table
 CREATE TABLE IF NOT EXISTS network_stats (
     id INTEGER PRIMARY KEY DEFAULT 1,
     difficulty DECIMAL,
@@ -62,7 +75,6 @@ CREATE TABLE IF NOT EXISTS network_stats (
     updated_at INTEGER
 );
 
--- Mempool table
 CREATE TABLE IF NOT EXISTS mempool (
     txid TEXT PRIMARY KEY,
     time INTEGER,
@@ -70,7 +82,6 @@ CREATE TABLE IF NOT EXISTS mempool (
 );
 CREATE INDEX IF NOT EXISTS idx_mempool_time ON mempool (time DESC);
 
--- Assets table
 CREATE TABLE IF NOT EXISTS assets (
     name TEXT PRIMARY KEY,
     type TEXT,
@@ -84,7 +95,6 @@ CREATE TABLE IF NOT EXISTS assets (
 );
 CREATE INDEX IF NOT EXISTS idx_assets_name ON assets (name);
 
--- Address Assets mapping table
 CREATE TABLE IF NOT EXISTS address_assets (
     address TEXT REFERENCES addresses(address) ON DELETE CASCADE,
     asset_name TEXT REFERENCES assets(name) ON DELETE CASCADE,
@@ -93,7 +103,6 @@ CREATE TABLE IF NOT EXISTS address_assets (
 );
 CREATE INDEX IF NOT EXISTS idx_addr_asset_bal ON address_assets (asset_name, balance DESC);
 
--- Daily Stats table
 CREATE TABLE IF NOT EXISTS daily_stats (
     date DATE PRIMARY KEY,
     tx_count INTEGER NOT NULL DEFAULT 0,

@@ -15,8 +15,8 @@ RUN mkdir src && \
     cargo build --release && \
     rm -rf src
 
-# Copy migrations and actual source code
-COPY migrations ./migrations
+# Copy schema and actual source code
+COPY schema.sql ./schema.sql
 COPY src ./src
 
 # Build the actual application

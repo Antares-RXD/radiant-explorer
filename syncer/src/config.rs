@@ -92,6 +92,8 @@ pub struct SyncConfig {
     pub batch_size: usize,
     #[serde(default = "default_input_chunk_size")]
     pub input_chunk_size: usize,
+    #[serde(default = "default_catch_up_threshold")]
+    pub catch_up_threshold: i64,
 }
 
 fn default_network_stats_interval() -> u64 {
@@ -120,6 +122,10 @@ fn default_batch_size() -> usize {
 
 fn default_input_chunk_size() -> usize {
     50
+}
+
+fn default_catch_up_threshold() -> i64 {
+    10_000
 }
 
 #[derive(Debug, Clone, Deserialize)]

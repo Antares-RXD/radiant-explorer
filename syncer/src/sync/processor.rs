@@ -1,9 +1,10 @@
 use futures::stream::{self, StreamExt};
+use std::collections::{HashMap, HashSet};
 use tracing::{debug, info, warn};
 
 use crate::db::repositories::{
-    AddressAssetsRepository, AddressesRepository, AssetsRepository, BlocksRepository,
-    SyncStateRepository, TransactionsRepository, TxAddressesRepository,
+    AddressAssetsRepository, AddressDelta, AddressesRepository, AssetsRepository, BlocksRepository,
+    SyncStateRepository, TransactionsRepository, TxAddressesRepository, UtxosRepository,
 };
 use crate::db::DbPool;
 use crate::error::Result;
@@ -33,6 +34,8 @@ impl<'a> BlockProcessor<'a> {
         debug!(height, tx_count = block.tx.len(), "Processing block");
 
         let mut db_tx = self.pool.begin().await?;
+        let mut address_deltas: HashMap<String, AddressDelta> = HashMap::new();
+        let mut tx_seen_addresses: HashSet<(String, String)> = HashSet::new();
 
         // 1. Insert Block
         BlocksRepository::insert_tx(&mut db_tx, block).await?;
@@ -53,7 +56,14 @@ impl<'a> BlockProcessor<'a> {
 
             // Process Inputs (Debits)
             let enriched = self
-                .process_inputs(&mut db_tx, transaction, block, tx_cache)
+                .process_inputs(
+                    &mut db_tx,
+                    transaction,
+                    block,
+                    tx_cache,
+                    &mut address_deltas,
+                    &mut tx_seen_addresses,
+                )
                 .await?;
 
             // Update raw_data with enriched transaction
@@ -61,8 +71,19 @@ impl<'a> BlockProcessor<'a> {
                 .await?;
 
             // Process Outputs (Credits)
-            self.process_outputs(&mut db_tx, transaction, block).await?;
+            self.process_outputs(
+                &mut db_tx,
+                transaction,
+                block,
+                &mut address_deltas,
+                &mut tx_seen_addresses,
+            )
+            .await?;
+
+            tx_cache.insert(transaction.txid.clone(), transaction.clone());
         }
+
+        AddressesRepository::apply_block_deltas_tx(&mut db_tx, &address_deltas).await?;
 
         // Update Sync State
         SyncStateRepository::set_last_height_tx(&mut db_tx, height).await?;
@@ -82,6 +103,8 @@ impl<'a> BlockProcessor<'a> {
         transaction: &Transaction,
         block: &Block,
         tx_cache: &mut TransactionCache,
+        address_deltas: &mut HashMap<String, AddressDelta>,
+        tx_seen_addresses: &mut HashSet<(String, String)>,
     ) -> Result<Transaction> {
         let mut enriched = transaction.clone();
 
@@ -100,44 +123,44 @@ impl<'a> BlockProcessor<'a> {
                 None => continue,
             };
 
-            // Get previous transaction from cache
-            let prev_tx = match tx_cache.get(txid) {
-                Some(tx) => tx,
-                None => {
-                    warn!(txid = txid, "Missing prevTx in cache");
-                    continue;
-                }
-            };
+            let spent_utxo =
+                UtxosRepository::spend_tx(db_tx, txid, vout_idx as u32, &transaction.txid, block.height)
+                    .await?;
 
-            let prev_out = match prev_tx.vout.get(vout_idx) {
-                Some(out) => out,
-                None => continue,
-            };
-
-            let addresses = &prev_out.script_pub_key.addresses;
-            let addr = match addresses {
-                Some(addrs) if !addrs.is_empty() => &addrs[0],
-                _ => continue,
-            };
-
-            let val = prev_out.value;
+            let prev_tx = tx_cache.get(txid);
+            let prev_out = prev_tx.and_then(|tx| tx.vout.get(vout_idx));
+            let val = spent_utxo.value;
 
             // Enrich vin data
-            enriched.vin[i].addresses = Some(vec![addr.clone()]);
+            enriched.vin[i].addresses = (!spent_utxo.raw_addresses.is_empty())
+                .then_some(spent_utxo.raw_addresses.clone());
             enriched.vin[i].value = Some(val);
 
             if val > 0.0 {
-                // Standard RXD Debit
-                AddressesRepository::upsert_debit_tx(db_tx, addr, val).await?;
+                if let Some(addr) = spent_utxo.primary_address.as_ref() {
+                    let delta = address_deltas.entry(addr.clone()).or_default();
+                    delta.balance_delta -= val;
+                    delta.sent_delta += val;
+                }
 
                 // Asset Debit
-                if let Some(ref asset) = prev_out.script_pub_key.asset {
-                    AddressAssetsRepository::upsert_debit_tx(db_tx, addr, &asset.name, asset.amount)
-                        .await?;
+                if let (Some(prev_out), Some(addr)) = (prev_out, spent_utxo.primary_address.as_deref()) {
+                    if let Some(ref asset) = prev_out.script_pub_key.asset {
+                        AddressAssetsRepository::upsert_debit_tx(db_tx, addr, &asset.name, asset.amount)
+                            .await?;
+                    }
                 }
 
                 // Index for History
-                self.insert_tx_address(db_tx, &transaction.txid, addr, block).await?;
+                self.insert_tx_addresses(
+                    db_tx,
+                    &transaction.txid,
+                    &spent_utxo.raw_addresses,
+                    block,
+                    tx_seen_addresses,
+                    address_deltas,
+                )
+                .await?;
             }
         }
 
@@ -149,22 +172,47 @@ impl<'a> BlockProcessor<'a> {
         db_tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
         transaction: &Transaction,
         block: &Block,
+        address_deltas: &mut HashMap<String, AddressDelta>,
+        tx_seen_addresses: &mut HashSet<(String, String)>,
     ) -> Result<()> {
+        let is_coinbase = transaction.vin.iter().any(|vin| vin.is_coinbase());
+
         for vout in &transaction.vout {
-            let addresses = &vout.script_pub_key.addresses;
-            let addr = match addresses {
-                Some(addrs) if !addrs.is_empty() => &addrs[0],
-                _ => continue,
+            let raw_addresses = vout.script_pub_key.addresses.clone().unwrap_or_default();
+            let primary_address = if raw_addresses.len() == 1 {
+                raw_addresses.first().map(String::as_str)
+            } else {
+                None
             };
 
             let val = vout.value;
 
             if val >= 0.0 {
-                // Standard RXD Credit
-                AddressesRepository::upsert_credit_tx(db_tx, addr, val).await?;
+                if let Some(addr) = primary_address {
+                    let delta = address_deltas.entry(addr.to_string()).or_default();
+                    delta.balance_delta += val;
+                    delta.received_delta += val;
+                }
+
+                UtxosRepository::insert_tx(
+                    db_tx,
+                    &transaction.txid,
+                    vout.n,
+                    block.height,
+                    block.time,
+                    val,
+                    &vout.script_pub_key.script_type,
+                    &vout.script_pub_key.hex,
+                    &raw_addresses,
+                    primary_address,
+                    is_coinbase,
+                )
+                .await?;
 
                 // Asset Processing
-                if let Some(ref asset) = vout.script_pub_key.asset {
+                if let (Some(ref asset), Some(addr)) =
+                    (&vout.script_pub_key.asset, raw_addresses.first())
+                {
                     let script_type = &vout.script_pub_key.script_type;
 
                     // Register New/Updated Asset Metadata
@@ -185,21 +233,44 @@ impl<'a> BlockProcessor<'a> {
                 }
 
                 // Index for History
-                self.insert_tx_address(db_tx, &transaction.txid, addr, block).await?;
+                self.insert_tx_addresses(
+                    db_tx,
+                    &transaction.txid,
+                    &raw_addresses,
+                    block,
+                    tx_seen_addresses,
+                    address_deltas,
+                )
+                .await?;
             }
         }
 
         Ok(())
     }
 
-    async fn insert_tx_address(
+    async fn insert_tx_addresses(
         &self,
         db_tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
         txid: &str,
-        address: &str,
+        addresses: &[String],
         block: &Block,
+        tx_seen_addresses: &mut HashSet<(String, String)>,
+        address_deltas: &mut HashMap<String, AddressDelta>,
     ) -> Result<()> {
-        TxAddressesRepository::insert_tx(db_tx, txid, address, block.height, block.time).await
+        let mut seen = HashSet::new();
+        for address in addresses {
+            if seen.insert(address) {
+                TxAddressesRepository::insert_tx(db_tx, txid, address, block.height, block.time)
+                    .await?;
+
+                let key = (txid.to_string(), address.clone());
+                if tx_seen_addresses.insert(key) {
+                    address_deltas.entry(address.clone()).or_default().tx_count_inc += 1;
+                }
+            }
+        }
+
+        Ok(())
     }
 
     pub async fn prefetch_inputs(

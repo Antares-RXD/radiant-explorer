@@ -1,3 +1,5 @@
+name: radiant-explorer
+
 services:
   # 1. Radiant Node
   node:
@@ -32,6 +34,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-radiant}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-radiant123}
       POSTGRES_DB: ${POSTGRES_DB:-radiantdb}
+      PGDATA: /var/lib/postgresql/data/pgdata
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U radiant -d radiantdb" ]
       interval: 5s
@@ -86,12 +89,7 @@ services:
       - "3333:3000"
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-radiant}:${POSTGRES_PASSWORD:-radiant123}@postgres:5432/${POSTGRES_DB:-radiantdb}
-      # Maintaining the original environment variable name just in case the frontend still expects it, but updated the port to 7332
-      NEURAI_RPC_URL: http://node:7332
-      NEURAI_RPC_USER: ${RPC_USER:-radiantuser}
-      NEURAI_RPC_PASSWORD: ${RPC_PASS:-radiantpassword}
       
-      # Also providing it as RADIANT just in case it has been updated
       RADIANT_RPC_URL: http://node:7332
       RADIANT_RPC_USER: ${RPC_USER:-radiantuser}
       RADIANT_RPC_PASSWORD: ${RPC_PASS:-radiantpassword}
@@ -111,4 +109,6 @@ networks:
 
 volumes:
   node-data:
+    name: radiant-explorer-node-data
   pg-data:
+    name: radiant-explorer-pg-data

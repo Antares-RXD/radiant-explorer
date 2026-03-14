@@ -4,7 +4,10 @@ use tokio::time::{sleep, Duration};
 use tracing::{error, info, warn};
 
 use crate::config::Config;
-use crate::db::repositories::{BlocksRepository, SyncStateRepository};
+use crate::db::repositories::{
+    AddressesRepository, BlocksRepository, SyncStateRepository, TxAddressesRepository,
+    UtxosRepository,
+};
 use crate::db::DbPool;
 use crate::error::Result;
 use crate::rpc::RpcClient;
@@ -179,10 +182,19 @@ impl SyncEngine {
         info!(from_height = height, "Rolling back blocks due to reorg");
 
         let mut tx = self.pool.begin().await?;
+        let mut affected_addresses = TxAddressesRepository::affected_addresses_from_height_tx(&mut tx, height).await?;
+        affected_addresses.extend(UtxosRepository::affected_addresses_from_height_tx(&mut tx, height).await?);
+
+        affected_addresses.sort();
+        affected_addresses.dedup();
+
+        UtxosRepository::revert_from_height_tx(&mut tx, height).await?;
 
         // Delete blocks from this height onwards
         // CASCADE will handle transactions, tx_addresses
         let deleted = BlocksRepository::delete_from_height(&mut tx, height).await?;
+
+        AddressesRepository::refresh_for_addresses_tx(&mut tx, &affected_addresses).await?;
 
         // Update sync state
         if height > 0 {

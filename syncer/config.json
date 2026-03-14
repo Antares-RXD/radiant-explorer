@@ -6,7 +6,8 @@
         "mainLoopNewBlockWait": 10000,
         "mainLoopErrorWait": 5000,
         "batchSize": 50,
-        "inputChunkSize": 100
+        "inputChunkSize": 100,
+        "catchUpThreshold": 10000
     },
     "api": {
         "coingeckoUrl": "https://api.coingecko.com/api/v3/simple/price?ids=radiant&vs_currencies=usd",

@@ -49,6 +49,27 @@ model Address {
   @@map("addresses")
 }
 
+model Utxo {
+  txid           String
+  vout           Int
+  blockHeight    Int      @map("block_height")
+  time           Int
+  value          Decimal  @db.Decimal
+  scriptType     String   @map("script_type")
+  scriptHex      String   @map("script_hex")
+  rawAddresses   Json     @map("raw_addresses")
+  primaryAddress String?  @map("primary_address")
+  spentByTxid    String?  @map("spent_by_txid")
+  spentHeight    Int?     @map("spent_height")
+  isCoinbase     Boolean  @default(false) @map("is_coinbase")
+
+  @@id([txid, vout])
+  @@index([primaryAddress, spentByTxid], name: "idx_utxos_primary_unspent")
+  @@index([blockHeight], name: "idx_utxos_block_height")
+  @@index([spentHeight], name: "idx_utxos_spent_height")
+  @@map("utxos")
+}
+
 model TxAddress {
   txid        String
   address     String

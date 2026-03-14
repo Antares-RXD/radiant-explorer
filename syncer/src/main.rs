@@ -96,11 +96,12 @@ async fn main() -> Result<()> {
     // Daily stats sync
     {
         let config = Arc::clone(&config);
+        let rpc = Arc::clone(&rpc);
         let pool = pool.clone();
         let shutdown_rx = shutdown_rx.clone();
 
         handles.push(tokio::spawn(async move {
-            let mut stats = DailyStatsSync::new(config, pool, shutdown_rx);
+            let mut stats = DailyStatsSync::new(config, rpc, pool, shutdown_rx);
             if let Err(e) = stats.run().await {
                 error!(error = %e, "Daily stats sync error");
             }

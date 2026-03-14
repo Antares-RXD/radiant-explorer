@@ -57,8 +57,8 @@ impl StatsSync {
         // Fetch peer info
         let peers = self.rpc.get_peer_info().await?;
 
-        // Fetch UTXO set info for supply
-        let txout_info = self.rpc.get_tx_out_set_info().await?;
+        // Always ask the node for the canonical UTXO-set supply.
+        let supply = self.rpc.get_tx_out_set_info().await?.total_amount;
 
         // Update database
         NetworkStatsRepository::update(
@@ -67,7 +67,7 @@ impl StatsSync {
             mining_info.networkhashps,
             connections,
             mining_info.blocks,
-            txout_info.total_amount,
+            supply,
             &peers,
         )
         .await?;
